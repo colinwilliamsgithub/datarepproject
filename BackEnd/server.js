@@ -15,55 +15,56 @@ next();
 
 const bodyParser = require("body-parser");
 
-//Here we are configuring express to use body-parser as middle-ware.
+// configuring express to use body-parser as middle-ware.
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-// getting-started.js
 const mongoose = require('mongoose');
 
 main().catch(err => console.log(err));
 
 async function main() {
   await mongoose.connect('mongodb+srv://g00401785:mongostuff@cluster0.bzyqhu3.mongodb.net/?retryWrites=true&w=majority');
-
-  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
 
-const bookSchema = new mongoose.Schema({
+// task schema for mongoDB
+const taskSchema = new mongoose.Schema({
   title:String,
-  cover:String,
-  author:String
+  description:String,
+  completed: { type: Boolean, default: false },
+  date:String
 })
 
-const bookModel = mongoose.model('sdfsdfsdfsdfsdfffffffffffff423', bookSchema);
+const taskModel = mongoose.model('todos', taskSchema);
 
-app.delete("/api/book/:id", async(req, res)=>{
+// delete task by id
+app.delete("/api/task/:id", async(req, res)=>{
   console.log("Delete: "+req.params.id);
 
-  let book = await bookModel.findByIdAndDelete(req.params.id);
-  res.send(book);
+  let task = await taskModel.findByIdAndDelete(req.params.id);
+  res.send(task);
 })
 
-app.put('/api/book/:id', async(req, res)=>{
+// update a task by id
+app.put('/api/task/:id', async(req, res)=>{
   console.log("Update: "+req.params.id);
 
-  let book = await bookModel.findByIdAndUpdate(req.params.id, req.body, {new:true});
-  res.send(book);
+  let task = await taskModel.findByIdAndUpdate(req.params.id, req.body, {new:true});
+  res.send(task);
 })
 
-
-app.post('/api/book', (req,res)=>{
+// create a task
+app.post('/api/task', (req,res)=>{
     console.log(req.body);
 
-    bookModel.create({
+    taskModel.create({
       title:req.body.title,
-      cover:req.body.cover,
-      author:req.body.author
+      description:req.body.description,
+      date:req.body.date
     })
-    .then(()=>{ res.send("Book Created")})
-    .catch(()=>{ res.send("Book NOT Created")});
+    .then(()=>{ res.send("Task Created")})
+    .catch(()=>{ res.send("Task NOT Created")});
 
 })
 
@@ -71,19 +72,20 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/api/books', async(req, res)=>{
+app.get('/api/tasks', async(req, res)=>{
     
-  let books = await bookModel.find({});
-  res.json(books);
+  let tasks = await taskModel.find({});
+  res.json(tasks);
 })
 
-app.get('/api/book/:identifier',async (req,res)=>{
+app.get('/api/task/:identifier',async (req,res)=>{
   console.log(req.params.identifier);
 
-  let book = await bookModel.findById(req.params.identifier);
-  res.send(book);
+  let task = await taskModel.findById(req.params.identifier);
+  res.send(task);
 })
 
+// start express app
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })

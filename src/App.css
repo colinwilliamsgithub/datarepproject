@@ -32,7 +32,30 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
+}
+
+.Tasks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+}
+
+.complete {
+  text-decoration: line-through;
+  color: darkgray;
+}
+
+.back {
+  background-color: black;
+}
+
+.datepick {
+  background-color: black;
+  color: white;
+  text-align: center;
 }
